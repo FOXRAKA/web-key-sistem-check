@@ -3,610 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ JR SCRIPTS - Key System (Device Bound) ⚡</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter & JetBrains Mono -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            purple: '#7f00ff',
-                            pink: '#e100ff',
-                            cyan: '#00d2ff',
-                            darkBg: '#08090d',
-                            cardBg: 'rgba(15, 17, 26, 0.85)',
-                            borderGlow: 'rgba(127, 0, 255, 0.4)'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    }
-                }
-            }
-        }
-    </script>
+    <title>JR SCRIPTS - Secure Key System</title>
     <style>
-        body {
-            background-color: #08090d;
-            background-image: 
-                radial-gradient(at 15% 15%, rgba(127, 0, 255, 0.22) 0px, transparent 45%),
-                radial-gradient(at 85% 85%, rgba(0, 210, 255, 0.18) 0px, transparent 45%);
-            min-height: 100vh;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0b0c10; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: rgba(18, 18, 28, 0.95); border: 1px solid rgba(0, 255, 200, 0.3); border-radius: 16px; width: 100%; max-width: 420px; padding: 25px; box-shadow: 0 0 25px rgba(0, 255, 200, 0.15); text-align: center; }
+        .header h2 { color: #00ffc8; font-size: 22px; margin-bottom: 6px; letter-spacing: 1px; }
+        .header p { color: #8a8a9e; font-size: 13px; margin-bottom: 20px; }
 
-        .glass-card {
-            background: rgba(15, 17, 26, 0.85);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(127, 0, 255, 0.35);
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.75);
-        }
+        .premium-banner { background: linear-gradient(135deg, rgba(255, 180, 0, 0.15), rgba(255, 100, 0, 0.15)); border: 1px solid rgba(255, 180, 0, 0.4); border-radius: 10px; padding: 12px; margin-bottom: 20px; text-align: left; }
+        .premium-title { color: #ffc107; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: space-between; }
+        .badge-discount { background: #ff3b30; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
+        .premium-desc { color: #d1d1d1; font-size: 12px; margin-top: 4px; }
+        .price { margin-top: 6px; font-size: 13px; color: #fff; }
+        .price del { color: #888; font-size: 11px; }
+        .btn-buy { display: block; width: 100%; text-align: center; background: #ff9500; color: #000; font-weight: bold; font-size: 12px; padding: 8px; border-radius: 6px; text-decoration: none; margin-top: 8px; transition: 0.2s; }
+        .btn-buy:hover { background: #ffaa33; }
 
-        .neon-glow {
-            box-shadow: 0 0 25px rgba(127, 0, 255, 0.45);
-        }
+        .step-container { display: flex; flex-direction: column; gap: 10px; }
+        .step-btn { background: #1a1a2a; border: 1px solid #2e2e45; color: #fff; padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; text-decoration: none; }
+        .step-btn.disabled { opacity: 0.4; pointer-events: none; }
+        .step-btn.active:hover { border-color: #00ffc8; background: #222238; }
+        .step-btn.done { border-color: #28a745; background: rgba(40, 167, 69, 0.15); color: #28a745; pointer-events: none; }
 
-        .neon-glow-cyan {
-            box-shadow: 0 0 25px rgba(0, 210, 255, 0.45);
-        }
-
-        .progress-gradient {
-            background: linear-gradient(90deg, #7f00ff 0%, #e100ff 50%, #00d2ff 100%);
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #08090d;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #7f00ff;
-            border-radius: 4px;
-        }
+        #keyResultSection { display: none; margin-top: 15px; background: #141420; border: 1px dashed #00ffc8; padding: 15px; border-radius: 10px; }
+        .key-box { background: #090910; border: 1px solid #2a2a3d; padding: 10px; border-radius: 6px; color: #00ffc8; font-family: monospace; font-size: 14px; font-weight: bold; letter-spacing: 1px; margin: 10px 0; word-break: break-all; }
+        .btn-copy { background: #00ffc8; color: #000; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-copy:hover { background: #00cc9f; }
+        .timer-info { font-size: 11px; color: #ff6b6b; margin-top: 8px; }
+        .warning-msg { color: #ff3b30; font-size: 11px; margin-top: 10px; display: none; }
     </style>
 </head>
-<body class="font-sans text-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6">
+<body>
 
-    <!-- Toast Notification Banner -->
-    <div id="toast" class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transition-all duration-300 transform translate-y-0 max-w-sm sm:max-w-md w-11/12">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-xl shrink-0"></i>
-        <span id="toastMsg" class="text-xs sm:text-sm">Notification message</span>
-    </div>
+    <div class="card">
+        <div class="header">
+            <h2>⚡ JR SCRIPTS KEY ⚡</h2>
+            <p>Selesaikan 4 Misi (Wajib min. 5 detik per tab)</p>
+        </div>
 
-    <!-- Main Outer Wrapper -->
-    <div class="w-full max-w-md relative">
-        
-        <!-- Ambient Glow Decorations -->
-        <div class="absolute -top-12 -left-12 w-36 h-36 bg-purple-600 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
-        <div class="absolute -bottom-12 -right-12 w-36 h-36 bg-cyan-500 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
-
-        <!-- Main Card Container -->
-        <div class="glass-card rounded-2xl p-5 sm:p-7 overflow-hidden relative transition-all duration-500">
-            
-            <!-- BRAND HEADER -->
-            <div class="text-center mb-5">
-                <div class="inline-flex items-center space-x-2 bg-purple-950/70 border border-purple-500/40 px-3.5 py-1 rounded-full text-xs text-purple-300 font-semibold mb-2.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>SOUTH BRONX SCRIPT v2.4</span>
-                </div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-300 to-pink-500">
-                    ⚡ JR SCRIPTS KEY ⚡
-                </h1>
-                <p class="text-xs text-gray-400 mt-1">Official Hardware-Bound Security Portal</p>
+        <div class="premium-banner">
+            <div class="premium-title">
+                <span>👑 LIFETIME PREMIUM</span>
+                <span class="badge-discount">DISKON 50%</span>
             </div>
+            <p class="premium-desc">Tanpa Key, Akses Permanen Selamanya!</p>
+            <div class="price">Harga: <b>Rp 100.000</b> <del>Rp 200.000</del></div>
+            <a href="https://discord.gg/cDadHKqEh" target="_blank" class="btn-buy">🛒 BELI DI DISCORD</a>
+        </div>
 
-            <!-- ========================================================= -->
-            <!-- LIFETIME PREMIUM PROMO BANNER (DISCOUNT 50%) -->
-            <!-- ========================================================= -->
-            <div class="mb-5 p-4 rounded-xl bg-gradient-to-br from-amber-950/60 via-purple-950/40 to-gray-900/90 border border-amber-500/40 shadow-lg relative overflow-hidden">
-                <div class="flex items-center justify-between mb-1.5">
-                    <div class="flex items-center space-x-1.5 text-amber-400 font-extrabold text-xs tracking-wide">
-                        <i class="fa-solid fa-crown text-amber-300"></i>
-                        <span>LIFETIME PREMIUM (NO KEY)</span>
-                    </div>
-                    <span class="bg-rose-600 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow">
-                        DISKON 50%
-                    </span>
-                </div>
-                <p class="text-[11px] text-gray-300 leading-snug">
-                    Malas lewati link terus setiap 24 jam? Beli akses permanen seumur hidup tanpa perlu lewati link!
-                </p>
-                <div class="mt-2.5 flex items-center justify-between">
-                    <div>
-                        <span class="text-xs text-gray-400 line-through mr-1">Rp 200.000</span>
-                        <span class="text-sm font-extrabold text-amber-300">Rp 100.000</span>
-                    </div>
-                    <a href="https://discord.gg/cDadHKqEh" target="_blank" class="py-1.5 px-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-gray-950 font-extrabold text-xs rounded-lg shadow-md transition-all flex items-center space-x-1">
-                        <i class="fa-brands fa-discord"></i>
-                        <span>BELI DI DISCORD</span>
-                    </a>
-                </div>
-            </div>
+        <div class="step-container" id="stepsContainer">
+            <a href="https://www.rblxscripts.net/scripts/script-aimbot-and-tringgerbot-best-work-e607f633" target="_blank" class="step-btn active" id="btnStep1" onclick="startStep(1, 5)">
+                <span>1️⃣ Like rblx.net</span><span id="status1">➔</span>
+            </a>
+            <a href="https://www.rblxscripts.net/scripts/script-aimbot-and-tringgerbot-best-work-e607f633" target="_blank" class="step-btn disabled" id="btnStep2" onclick="startStep(2, 5)">
+                <span>2️⃣ Favorit rblx.net</span><span id="status2">🔒</span>
+            </a>
+            <a href="https://www.rblxscripts.net/scripts/script-aimbot-and-tringgerbot-best-work-e607f633" target="_blank" class="step-btn disabled" id="btnStep3" onclick="startStep(3, 5)">
+                <span>3️⃣ Copy Link rblx.net</span><span id="status3">🔒</span>
+            </a>
+            <!-- Link Profil Roblox UNIKLOO5 -->
+            <a href="https://www.roblox.com/users/9169232907/profile" target="_blank" class="step-btn disabled" id="btnStep4" onclick="startStep(4, 5)">
+                <span>4️⃣ Favorit Akun Roblox: UNIKLOO5</span><span id="status4">🔒</span>
+            </a>
+            <div class="warning-msg" id="warningMsg">❌ GAGAL! Jangan kembali sebelum 5 detik! Misi direset.</div>
+        </div>
 
-            <!-- ========================================================= -->
-            <!-- GUI KERJA (TASK VERIFICATION INTERFACE) -->
-            <!-- ========================================================= -->
-            <div id="guiKerja" class="space-y-4 transition-all duration-500">
-                
-                <!-- Progress Header -->
-                <div class="bg-gray-900/80 rounded-xl p-3 border border-gray-800">
-                    <div class="flex justify-between items-center text-xs font-semibold mb-2">
-                        <span class="text-gray-400">Verifikasi Progres:</span>
-                        <span id="progressText" class="text-purple-400">0% (0 / 3 Misi)</span>
-                    </div>
-                    <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                        <div id="progressBar" class="progress-gradient h-full w-0 transition-all duration-500"></div>
-                    </div>
-                </div>
-
-                <!-- Anti-Bypass Security Alert Box -->
-                <div class="p-3 bg-rose-950/30 border border-rose-500/40 rounded-xl flex items-start space-x-2.5 text-xs text-rose-200">
-                    <i class="fa-solid fa-triangle-exclamation text-rose-400 text-base mt-0.5 shrink-0"></i>
-                    <div>
-                        <span class="font-bold text-rose-300">Proteksi Anti-Bypass (Minimal 5 Detik):</span>
-                        <p class="text-gray-300 mt-0.5 text-[11px] leading-tight">
-                            Buka tab target minimal <strong>5 detik penuh</strong>. Jika kamu kembali ke tab web ini sebelum 5 detik berlalu, misi otomatis <strong>GAGAL & DI-RESET</strong>!
-                        </p>
-                    </div>
-                </div>
-
-                <!-- STEP TASKS CONTAINER -->
-                <div class="space-y-3">
-                    
-                    <!-- STEP 1: Like & Favorit Script #1 (rblx.net) -->
-                    <div id="cardStep1" class="p-3.5 rounded-xl border border-purple-500/40 bg-gray-900/60 flex flex-col space-y-2.5 transition-all">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2.5">
-                                <div class="w-7 h-7 rounded-lg bg-purple-600/30 border border-purple-500/50 flex items-center justify-center font-bold text-purple-300 text-xs">
-                                    1
-                                </div>
-                                <div>
-                                    <h3 class="text-xs font-bold text-gray-200">Like & Favorit Script #1</h3>
-                                    <p class="text-[10px] text-gray-400">Buka rblx.net (Min. 5 Detik)</p>
-                                </div>
-                            </div>
-                            <span id="badgeStep1" class="text-[11px] bg-purple-900/60 text-purple-300 px-2 py-0.5 rounded-md border border-purple-500/40 font-semibold">Siap</span>
-                        </div>
-                        <button id="btnStep1" onclick="executeStep(1, 'https://rblx.net')" class="w-full py-2 px-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold rounded-lg text-xs shadow-md transition-all flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                            <span>Kerjakan Misi 1</span>
-                        </button>
-                    </div>
-
-                    <!-- STEP 2: Copy & Rate Script #2 (rblx.net) -->
-                    <div id="cardStep2" class="p-3.5 rounded-xl border border-gray-800 bg-gray-900/20 opacity-50 flex flex-col space-y-2.5 transition-all">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2.5">
-                                <div class="w-7 h-7 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center font-bold text-gray-500 text-xs">
-                                    2
-                                </div>
-                                <div>
-                                    <h3 class="text-xs font-bold text-gray-400">Copy & Rate Script #2</h3>
-                                    <p class="text-[10px] text-gray-500">Buka rblx.net (Min. 5 Detik)</p>
-                                </div>
-                            </div>
-                            <span id="badgeStep2" class="text-[11px] bg-gray-800 text-gray-500 px-2 py-0.5 rounded-md border border-gray-800"><i class="fa-solid fa-lock text-[9px] mr-1"></i>Terkunci</span>
-                        </div>
-                        <button id="btnStep2" disabled onclick="executeStep(2, 'https://rblx.net')" class="w-full py-2 px-3 bg-gray-800 text-gray-500 font-semibold rounded-lg text-xs cursor-not-allowed transition-all flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-star"></i>
-                            <span>Kerjakan Misi 2</span>
-                        </button>
-                    </div>
-
-                    <!-- STEP 3: JR SCRIPTS KEY Verification -->
-                    <div id="cardStep3" class="p-3.5 rounded-xl border border-gray-800 bg-gray-900/20 opacity-50 flex flex-col space-y-2.5 transition-all">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2.5">
-                                <div class="w-7 h-7 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center font-bold text-gray-500 text-xs">
-                                    3
-                                </div>
-                                <div>
-                                    <h3 class="text-xs font-bold text-gray-400">JR SCRIPTS KEY Verification</h3>
-                                    <p class="text-[10px] text-gray-500">Buka Verifikasi (Min. 5 Detik)</p>
-                                </div>
-                            </div>
-                            <span id="badgeStep3" class="text-[11px] bg-gray-800 text-gray-500 px-2 py-0.5 rounded-md border border-gray-800"><i class="fa-solid fa-lock text-[9px] mr-1"></i>Terkunci</span>
-                        </div>
-                        <button id="btnStep3" disabled onclick="executeStep(3, 'https://rblx.net')" class="w-full py-2 px-3 bg-gray-800 text-gray-500 font-semibold rounded-lg text-xs cursor-not-allowed transition-all flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-key"></i>
-                            <span>Selesaikan Verifikasi Akhir</span>
-                        </button>
-                    </div>
-
-                </div>
-
-                <!-- CLAIM KEY BUTTON -->
-                <div class="pt-1">
-                    <button id="btnClaimKey" disabled onclick="claimFinalKey()" class="w-full py-3.5 px-4 bg-gray-800 text-gray-500 font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 cursor-not-allowed border border-gray-700">
-                        <i class="fa-solid fa-lock"></i>
-                        <span>AMBIL KEY (SELESAIKAN MISI DULU)</span>
-                    </button>
-                </div>
-
-            </div>
-
-            <!-- ========================================================= -->
-            <!-- GUI KODE (KEY DISPLAY & DEVICE BOUND INTERFACE) -->
-            <!-- ========================================================= -->
-            <div id="guiKode" class="hidden space-y-4 transition-all duration-500 transform translate-y-4">
-                
-                <!-- Status Banner -->
-                <div class="text-center p-3.5 bg-emerald-950/40 border border-emerald-500/40 rounded-2xl">
-                    <div class="w-10 h-10 bg-emerald-500/20 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-1.5 text-emerald-400 text-lg">
-                        <i class="fa-solid fa-shield-check"></i>
-                    </div>
-                    <h2 class="text-base font-bold text-emerald-300">Verifikasi Sukses!</h2>
-                    <p class="text-xs text-gray-300 mt-0.5">Key kamu terkunci khusus di perangkat ini.</p>
-                </div>
-
-                <!-- KEY DISPLAY BOX -->
-                <div class="bg-gray-950/90 border-2 border-purple-500/70 rounded-2xl p-4 text-center relative overflow-hidden neon-glow">
-                    <div class="text-[10px] font-bold uppercase tracking-wider text-purple-400 mb-1">KEY RESMI DARI JR SCRIPTS:</div>
-                    
-                    <div class="font-mono text-base sm:text-lg font-extrabold text-cyan-300 tracking-wider my-2 bg-gray-900/90 py-2.5 px-3 rounded-xl border border-gray-800 select-all break-all" id="keyDisplayCode">
-                        JRK-XXXXXXXX
-                    </div>
-
-                    <!-- Device Lock Info Badge -->
-                    <div class="inline-flex items-center space-x-1.5 bg-purple-900/50 border border-purple-500/50 px-3 py-1 rounded-full text-[10px] font-bold text-purple-200 mt-1">
-                        <i class="fa-solid fa-laptop-code text-cyan-400"></i>
-                        <span>PERANGKAT TERKUNCI (1 DEVICE ONLY)</span>
-                    </div>
-                </div>
-
-                <!-- COUNTDOWN TIMER CONTAINER -->
-                <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-3.5 text-center">
-                    <div class="text-xs text-gray-400 mb-2 flex items-center justify-center space-x-1.5">
-                        <i class="fa-regular fa-clock text-purple-400"></i>
-                        <span>Masa Berlaku Key (Tidak Bisa Direset):</span>
-                    </div>
-                    
-                    <div class="grid grid-cols-3 gap-2 font-mono">
-                        <div class="bg-gray-950 p-2 rounded-lg border border-gray-800">
-                            <span id="timerHours" class="text-base font-bold text-purple-300">23</span>
-                            <span class="block text-[9px] text-gray-500 font-sans uppercase">Jam</span>
-                        </div>
-                        <div class="bg-gray-950 p-2 rounded-lg border border-gray-800">
-                            <span id="timerMinutes" class="text-base font-bold text-purple-300">59</span>
-                            <span class="block text-[9px] text-gray-500 font-sans uppercase">Menit</span>
-                        </div>
-                        <div class="bg-gray-950 p-2 rounded-lg border border-gray-800">
-                            <span id="timerSeconds" class="text-base font-bold text-purple-300">59</span>
-                            <span class="block text-[9px] text-gray-500 font-sans uppercase">Detik</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LUAU LOADER CODE DISPLAY -->
-                <div class="bg-gray-950/80 border border-gray-800 rounded-xl p-3">
-                    <div class="flex justify-between items-center mb-1 text-[11px] text-gray-400 font-semibold">
-                        <span>Luau Executor Command (Solara/dll):</span>
-                        <span class="text-purple-400">South Bronx Script</span>
-                    </div>
-                    <div class="font-mono text-[11px] bg-gray-900 p-2.5 rounded-lg text-emerald-400 border border-gray-800 select-all break-all overflow-x-auto">
-                        loadstring(game:HttpGet("https://raw.githubusercontent.com/FOXRAKA/NOCLIP-JR/main/loader.lua"))()
-                    </div>
-                </div>
-
-                <!-- ACTION BUTTONS -->
-                <div class="space-y-2.5 pt-1">
-                    <button id="btnCopyKey" onclick="copyKeyCode()" class="w-full py-3 px-4 bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 hover:opacity-90 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow-xl transition-all flex items-center justify-center space-x-2 neon-glow-cyan active:scale-95">
-                        <i class="fa-solid fa-copy text-sm"></i>
-                        <span>📋 SALIN KEY SEKARANG</span>
-                    </button>
-                </div>
-
-                <!-- Footnote Instructions -->
-                <div class="text-center text-[10px] text-gray-500">
-                    Key ini tersimpan otomatis di browser kamu selama 24 jam. Jangan hapus cache browser jika tidak ingin kehilangan akses.
-                </div>
-
-            </div>
-
-            <!-- FOOTER COPYRIGHT -->
-            <div class="mt-5 pt-3 border-t border-gray-800/80 text-center text-[11px] text-gray-500 flex justify-between items-center">
-                <span>Developer: <strong class="text-purple-400">FOXRAKA</strong></span>
-                <span>© 2026 JR SCRIPTS</span>
-            </div>
-
+        <div id="keyResultSection">
+            <p style="font-size: 12px; color: #aaa;">🔑 Key Unik Perangkat Kamu:</p>
+            <div class="key-box" id="keyDisplay">LOADING...</div>
+            <button class="btn-copy" onclick="copyKey()">📋 SALIN KEY</button>
+            <div class="timer-info" id="timerDisplay">Masa berlaku: 24 Jam</div>
         </div>
     </div>
 
-    <!-- SCRIPT LOGIC -->
     <script>
-        // System Constants & Storage Keys
-        const STORAGE_KEY_NAME = "JR_SCRIPTS_DEVICE_KEY_DATA";
-        const REQUIRED_TIME_MS = 5000; // Minimal 5 Detik di tab target
-
-        // App States
         let currentStep = 1;
-        let activeStepNum = null;
-        let tabOpenTimestamp = 0;
-        let isTabActiveChecking = false;
-        let timerInterval = null;
+        let stepStartTime = 0;
+        let activeTimer = null;
+        let isWaiting = false;
 
-        // Elements
-        const guiKerja = document.getElementById('guiKerja');
-        const guiKode = document.getElementById('guiKode');
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-        const btnClaimKey = document.getElementById('btnClaimKey');
-
-        // Generate Hardware / Device Fingerprint (HWID Simulation)
-        function getDeviceFingerprint() {
-            const userAgent = navigator.userAgent;
-            const screenRes = `${window.screen.width}x${window.screen.height}`;
-            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            
-            // Canvas Fingerprinting
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = "top";
-            ctx.font = "14px 'Arial'";
-            ctx.fillStyle = "#f60";
-            ctx.fillRect(125, 1, 62, 20);
-            ctx.fillStyle = "#069";
-            ctx.fillText("JR-HWID-SECURITY-2026", 2, 15);
-            const canvasData = canvas.toDataURL();
-            
-            // Simple hash string
+        function generateSecureKey(hwid) {
+            let salt = "JR_SECRET_2026_";
+            let raw = salt + hwid + new Date().toDateString();
             let hash = 0;
-            const str = userAgent + screenRes + timeZone + canvasData;
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
+            for (let i = 0; i < raw.length; i++) {
+                hash = ((hash << 5) - hash) + raw.charCodeAt(i);
                 hash |= 0;
             }
-            return Math.abs(hash).toString(36).toUpperCase().substring(0, 8);
+            return "JRK-" + Math.abs(hash).toString(36).toUpperCase() + "-" + Math.floor(1000 + Math.random() * 9000);
         }
 
-        // Check if device already has a valid non-expired key saved
-        window.addEventListener('load', () => {
-            const savedData = localStorage.getItem(STORAGE_KEY_NAME);
-            if (savedData) {
-                try {
-                    const parsed = JSON.parse(savedData);
-                    const now = Date.now();
-                    
-                    // Check 24-hour expiration
-                    if (now < parsed.expiresAt) {
-                        // Key still valid! Jump straight to GUI Kode
-                        showExistingKeyGUI(parsed.key, parsed.expiresAt);
-                        return;
-                    } else {
-                        // Key expired, remove old key
-                        localStorage.removeItem(STORAGE_KEY_NAME);
-                        showToast("Key sebelumnya telah kadaluarsa (24 Jam expired). Silakan selesaikan misi baru!", "warn");
-                    }
-                } catch(e) {
-                    localStorage.removeItem(STORAGE_KEY_NAME);
+        function getHWID() {
+            let canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            ctx.fillText("JR_HWID_CHECK", 2, 2);
+            let b64 = canvas.toDataURL().slice(-15);
+            return b64 + navigator.hardwareConcurrency + window.screen.width;
+        }
+
+        window.onload = function() {
+            let saved = localStorage.getItem("JR_SECURE_KEY_DATA");
+            if (saved) {
+                let data = JSON.parse(saved);
+                if (new Date().getTime() < data.expire) {
+                    showKeyGUI(data.key, data.expire);
+                } else {
+                    localStorage.removeItem("JR_SECURE_KEY_DATA");
                 }
             }
-        });
+        };
 
-        // Trigger Step Execution & Tab Monitor
-        function executeStep(stepNum, targetUrl) {
-            if (stepNum !== currentStep || isTabActiveChecking) return;
+        function startStep(stepNum, minSec) {
+            if (stepNum !== currentStep) return;
+            stepStartTime = new Date().getTime();
+            isWaiting = true;
+            document.getElementById("warningMsg").style.display = "none";
+            let st = document.getElementById("status" + stepNum);
+            st.innerText = "⏳ 5s...";
 
-            activeStepNum = stepNum;
-            tabOpenTimestamp = Date.now();
-            isTabActiveChecking = true;
-
-            const btn = document.getElementById(`btnStep${stepNum}`);
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Menunggu Kamu di Tab Target...</span>`;
-
-            // Open destination target site in new tab
-            window.open(targetUrl, '_blank');
-
-            showToast("Buka web target minimal 5 DETIK! Jangan langsung kembali.", "info");
-        }
-
-        // Detect user returning back to this window tab
-        window.addEventListener('focus', () => {
-            if (!isTabActiveChecking || activeStepNum === null) return;
-
-            const timeSpent = Date.now() - tabOpenTimestamp;
-            const btn = document.getElementById(`btnStep${activeStepNum}`);
-
-            // Strict anti-bypass check: Must stay on target site for at least 5 seconds
-            if (timeSpent < REQUIRED_TIME_MS) {
-                // FAILED & RESET!
-                isTabActiveChecking = false;
-                const remainingSeconds = ((REQUIRED_TIME_MS - timeSpent) / 1000).toFixed(1);
-                
-                showToast(`❌ GAGAL! Kamu kembali terlalu cepat (Kurang ${remainingSeconds} detik lagi). Misi diulang!`, "error");
-                
-                // Reset Button State to retry
-                if (activeStepNum === 1) {
-                    btn.innerHTML = `<i class="fa-solid fa-rotate-right"></i> <span>Gagal - Ulang Misi 1</span>`;
-                } else if (activeStepNum === 2) {
-                    btn.innerHTML = `<i class="fa-solid fa-rotate-right"></i> <span>Gagal - Ulang Misi 2</span>`;
-                } else if (activeStepNum === 3) {
-                    btn.innerHTML = `<i class="fa-solid fa-rotate-right"></i> <span>Gagal - Ulang Verifikasi</span>`;
+            activeTimer = setInterval(() => {
+                let elapsed = Math.floor((new Date().getTime() - stepStartTime) / 1000);
+                if (elapsed >= minSec) {
+                    clearInterval(activeTimer);
+                    isWaiting = false;
+                    passStep(stepNum);
+                } else {
+                    st.innerText = "⏳ " + (minSec - elapsed) + "s...";
                 }
-                activeStepNum = null;
-            } else {
-                // SUCCESS! 5+ seconds spent
-                isTabActiveChecking = false;
-                completeStepSuccess(activeStepNum);
-                activeStepNum = null;
-            }
-        });
-
-        // Handle step success completion
-        function completeStepSuccess(stepNum) {
-            const btn = document.getElementById(`btnStep${stepNum}`);
-            const badge = document.getElementById(`badgeStep${stepNum}`);
-
-            btn.innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400"></i> <span>Selesai (Terverifikasi)</span>`;
-            btn.className = "w-full py-2 px-3 bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 font-semibold rounded-lg text-xs cursor-default flex items-center justify-center space-x-2";
-            btn.disabled = true;
-
-            badge.innerHTML = `✅ Selesai`;
-            badge.className = "text-[11px] bg-emerald-900/60 text-emerald-300 px-2 py-0.5 rounded-md border border-emerald-500/40 font-semibold";
-
-            showToast(`✅ Misi ${stepNum} Berhasil Terverifikasi!`, "success");
-
-            unlockNextStep(stepNum + 1);
-            updateProgress();
+            }, 1000);
         }
 
-        // Unlock step progression
-        function unlockNextStep(nextStep) {
-            currentStep = nextStep;
-
-            if (nextStep <= 3) {
-                const nextCard = document.getElementById(`cardStep${nextStep}`);
-                const nextBtn = document.getElementById(`btnStep${nextStep}`);
-                const nextBadge = document.getElementById(`badgeStep${nextStep}`);
-
-                nextCard.classList.remove('opacity-50', 'bg-gray-900/20');
-                nextCard.classList.add('bg-gray-900/60', 'border-purple-500/40');
-
-                nextBtn.disabled = false;
-                nextBtn.className = "w-full py-2 px-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold rounded-lg text-xs shadow-md transition-all flex items-center justify-center space-x-2";
-
-                nextBadge.innerHTML = "Siap";
-                nextBadge.className = "text-[11px] bg-purple-900/60 text-purple-300 px-2 py-0.5 rounded-md border border-purple-500/40 font-semibold";
-            } else {
-                // All 3 steps complete -> Enable Final Claim Button
-                btnClaimKey.disabled = false;
-                btnClaimKey.className = "w-full py-3.5 px-4 bg-gradient-to-r from-cyan-400 via-purple-600 to-pink-500 hover:opacity-90 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow-xl transition-all flex items-center justify-center space-x-2 neon-glow-cyan cursor-pointer active:scale-95";
-                btnClaimKey.innerHTML = `<i class="fa-solid fa-key"></i> <span>AMBIL KEY SEKARANG</span>`;
-            }
-        }
-
-        // Update top progress bar percentage
-        function updateProgress() {
-            const completedCount = currentStep - 1;
-            const percentage = Math.min(Math.round((completedCount / 3) * 100), 100);
-
-            progressBar.style.width = `${percentage}%`;
-            progressText.innerText = `${percentage}% (${completedCount} / 3 Misi)`;
-        }
-
-        // Claim Final Key & Lock to Device for 24 Hours
-        function claimFinalKey() {
-            const deviceHwid = getDeviceFingerprint();
-            const fullKey = `JRK-${deviceHwid}`;
-            const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 Hours exact
-
-            // Save non-resettable data to localStorage
-            const keyRecord = {
-                key: fullKey,
-                hwid: deviceHwid,
-                createdAt: Date.now(),
-                expiresAt: expiresAt
-            };
-            localStorage.setItem(STORAGE_KEY_NAME, JSON.stringify(keyRecord));
-
-            showExistingKeyGUI(fullKey, expiresAt);
-        }
-
-        // Transition interface to GUI Kode
-        function showExistingKeyGUI(keyString, expiresAtTimestamp) {
-            document.getElementById('keyDisplayCode').innerText = keyString;
-
-            // Fade out GUI Kerja
-            guiKerja.classList.add('opacity-0', 'scale-95');
-
-            setTimeout(() => {
-                guiKerja.classList.add('hidden');
-                guiKode.classList.remove('hidden');
-                
+        window.addEventListener("focus", function() {
+            if (isWaiting) {
+                clearInterval(activeTimer);
+                isWaiting = false;
+                let st = document.getElementById("status" + currentStep);
+                st.innerText = "❌ Gagal";
+                document.getElementById("warningMsg").style.display = "block";
                 setTimeout(() => {
-                    guiKode.classList.remove('opacity-0', 'translate-y-4');
-                    guiKode.classList.add('opacity-100', 'translate-y-0');
-                    startLiveCountdown(expiresAtTimestamp);
-                }, 50);
-            }, 300);
-        }
-
-        // Countdown Timer for 24 Hours
-        function startLiveCountdown(expiresAt) {
-            if (timerInterval) clearInterval(timerInterval);
-
-            function updateTimer() {
-                const now = Date.now();
-                const diff = expiresAt - now;
-
-                if (diff <= 0) {
-                    clearInterval(timerInterval);
-                    localStorage.removeItem(STORAGE_KEY_NAME);
-                    showToast("Key telah kadaluarsa! Silakan muat ulang halaman.", "warn");
-                    setTimeout(() => location.reload(), 2000);
-                    return;
-                }
-
-                const hrs = Math.floor(diff / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-                document.getElementById('timerHours').innerText = String(hrs).padStart(2, '0');
-                document.getElementById('timerMinutes').innerText = String(mins).padStart(2, '0');
-                document.getElementById('timerSeconds').innerText = String(secs).padStart(2, '0');
+                    st.innerText = "➔";
+                    document.getElementById("warningMsg").style.display = "none";
+                }, 2500);
             }
+        });
 
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
+        function passStep(stepNum) {
+            document.getElementById("btnStep" + stepNum).classList.remove("active");
+            document.getElementById("btnStep" + stepNum).classList.add("done");
+            document.getElementById("status" + stepNum).innerText = "✅";
 
-        // Copy Key functionality
-        function copyKeyCode() {
-            const keyText = document.getElementById('keyDisplayCode').innerText;
-            if (!keyText) return;
-
-            const dummyInput = document.createElement("input");
-            document.body.appendChild(dummyInput);
-            dummyInput.value = keyText;
-            dummyInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummyInput);
-
-            const btn = document.getElementById('btnCopyKey');
-            btn.innerHTML = `<i class="fa-solid fa-check text-sm"></i> <span>✅ KEY BERHASIL DISALIN!</span>`;
-            btn.className = "w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow-xl transition-all flex items-center justify-center space-x-2 active:scale-95";
-
-            showToast("✅ Key berhasil disalin ke clipboard!", "success");
-
-            setTimeout(() => {
-                btn.innerHTML = `<i class="fa-solid fa-copy text-sm"></i> <span>📋 SALIN KEY SEKARANG</span>`;
-                btn.className = "w-full py-3 px-4 bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 hover:opacity-90 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow-xl transition-all flex items-center justify-center space-x-2 neon-glow-cyan active:scale-95";
-            }, 3000);
-        }
-
-        // Toast alert handler
-        function showToast(message, type = "info") {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.innerText = message;
-
-            if (type === "error") {
-                toast.className = "fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-rose-600 text-white font-semibold px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transition-all duration-300 transform translate-y-0 text-xs sm:text-sm text-center max-w-sm sm:max-w-md w-11/12";
-                toastIcon.className = "fa-solid fa-circle-xmark text-xl shrink-0";
-            } else if (type === "warn") {
-                toast.className = "fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-amber-500 text-white font-semibold px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transition-all duration-300 transform translate-y-0 text-xs sm:text-sm text-center max-w-sm sm:max-w-md w-11/12";
-                toastIcon.className = "fa-solid fa-circle-exclamation text-xl shrink-0";
+            if (stepNum < 4) {
+                currentStep = stepNum + 1;
+                let nextBtn = document.getElementById("btnStep" + currentStep);
+                nextBtn.classList.remove("disabled");
+                nextBtn.classList.add("active");
+                document.getElementById("status" + currentStep).innerText = "➔";
             } else {
-                toast.className = "fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white font-semibold px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transition-all duration-300 transform translate-y-0 text-xs sm:text-sm text-center max-w-sm sm:max-w-md w-11/12";
-                toastIcon.className = "fa-solid fa-circle-check text-xl shrink-0";
+                generateFinalKey();
             }
+        }
 
-            toast.classList.remove('hidden');
+        function generateFinalKey() {
+            let hwid = getHWID();
+            let finalKey = generateSecureKey(hwid);
+            let expireTime = new Date().getTime() + (24 * 60 * 60 * 1000);
+            localStorage.setItem("JR_SECURE_KEY_DATA", JSON.stringify({ key: finalKey, expire: expireTime }));
+            showKeyGUI(finalKey, expireTime);
+        }
 
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3500);
+        function showKeyGUI(key, expireTime) {
+            document.getElementById("stepsContainer").style.display = "none";
+            document.getElementById("keyResultSection").style.display = "block";
+            document.getElementById("keyDisplay").innerText = key;
+
+            setInterval(() => {
+                let diff = expireTime - new Date().getTime();
+                if (diff <= 0) { localStorage.removeItem("JR_SECURE_KEY_DATA"); location.reload(); }
+                let h = Math.floor(diff / (1000 * 60 * 60));
+                let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                let s = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById("timerDisplay").innerText = `Berlaku: ${h}j ${m}m ${s}d`;
+            }, 1000);
+        }
+
+        function copyKey() {
+            navigator.clipboard.writeText(document.getElementById("keyDisplay").innerText);
+            let btn = document.querySelector(".btn-copy");
+            btn.innerText = "✅ TERKOPI!";
+            setTimeout(() => { btn.innerText = "📋 SALIN KEY"; }, 2000);
         }
     </script>
 </body>
