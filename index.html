@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JR SCRIPTS - Secure Key System</title>
+    <title>JR SCRIPTS - Key Generator System</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0b0c10; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
@@ -62,18 +62,17 @@
             <a href="https://www.rblxscripts.net/scripts/script-aimbot-and-tringgerbot-best-work-e607f633" target="_blank" class="step-btn disabled" id="btnStep3" onclick="startStep(3, 5)">
                 <span>3️⃣ Copy Link rblx.net</span><span id="status3">🔒</span>
             </a>
-            <!-- Link Profil Roblox UNIKLOO5 -->
             <a href="https://www.roblox.com/users/9169232907/profile" target="_blank" class="step-btn disabled" id="btnStep4" onclick="startStep(4, 5)">
-                <span>4️⃣ Favorit Akun Roblox: UNIKLOO5</span><span id="status4">🔒</span>
+                <span>4️⃣ Favorit Akun: UNIKLOO5</span><span id="status4">🔒</span>
             </a>
             <div class="warning-msg" id="warningMsg">❌ GAGAL! Jangan kembali sebelum 5 detik! Misi direset.</div>
         </div>
 
         <div id="keyResultSection">
-            <p style="font-size: 12px; color: #aaa;">🔑 Key Unik Perangkat Kamu:</p>
-            <div class="key-box" id="keyDisplay">LOADING...</div>
+            <p style="font-size: 12px; color: #aaa;">🔑 Key Unik Kamu (Otomatis Dibuat):</p>
+            <div class="key-box" id="keyDisplay">JRK-GENERATING...</div>
             <button class="btn-copy" onclick="copyKey()">📋 SALIN KEY</button>
-            <div class="timer-info" id="timerDisplay">Masa berlaku: 24 Jam</div>
+            <div class="timer-info" id="timerDisplay">Berlaku selama 24 Jam</div>
         </div>
     </div>
 
@@ -82,37 +81,6 @@
         let stepStartTime = 0;
         let activeTimer = null;
         let isWaiting = false;
-
-        function generateSecureKey(hwid) {
-            let salt = "JR_SECRET_2026_";
-            let raw = salt + hwid + new Date().toDateString();
-            let hash = 0;
-            for (let i = 0; i < raw.length; i++) {
-                hash = ((hash << 5) - hash) + raw.charCodeAt(i);
-                hash |= 0;
-            }
-            return "JRK-" + Math.abs(hash).toString(36).toUpperCase() + "-" + Math.floor(1000 + Math.random() * 9000);
-        }
-
-        function getHWID() {
-            let canvas = document.createElement('canvas');
-            let ctx = canvas.getContext('2d');
-            ctx.fillText("JR_HWID_CHECK", 2, 2);
-            let b64 = canvas.toDataURL().slice(-15);
-            return b64 + navigator.hardwareConcurrency + window.screen.width;
-        }
-
-        window.onload = function() {
-            let saved = localStorage.getItem("JR_SECURE_KEY_DATA");
-            if (saved) {
-                let data = JSON.parse(saved);
-                if (new Date().getTime() < data.expire) {
-                    showKeyGUI(data.key, data.expire);
-                } else {
-                    localStorage.removeItem("JR_SECURE_KEY_DATA");
-                }
-            }
-        };
 
         function startStep(stepNum, minSec) {
             if (stepNum !== currentStep) return;
@@ -160,17 +128,36 @@
                 nextBtn.classList.add("active");
                 document.getElementById("status" + currentStep).innerText = "➔";
             } else {
-                generateFinalKey();
+                generateAutoKey();
             }
         }
 
-        function generateFinalKey() {
-            let hwid = getHWID();
-            let finalKey = generateSecureKey(hwid);
-            let expireTime = new Date().getTime() + (24 * 60 * 60 * 1000);
-            localStorage.setItem("JR_SECURE_KEY_DATA", JSON.stringify({ key: finalKey, expire: expireTime }));
+        function generateAutoKey() {
+            // Generate kode unik kombinasi huruf & angka (contoh: JRK-AJVNU)
+            let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let uniqueCode = "";
+            for (let i = 0; i < 6; i++) {
+                uniqueCode += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            let finalKey = "JRK-" + uniqueCode;
+            let expireTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 Jam
+
+            // Simpan ke localStorage web
+            localStorage.setItem("JR_AUTO_KEY", JSON.stringify({ key: finalKey, expire: expireTime }));
             showKeyGUI(finalKey, expireTime);
         }
+
+        window.onload = function() {
+            let saved = localStorage.getItem("JR_AUTO_KEY");
+            if (saved) {
+                let data = JSON.parse(saved);
+                if (new Date().getTime() < data.expire) {
+                    showKeyGUI(data.key, data.expire);
+                } else {
+                    localStorage.removeItem("JR_AUTO_KEY");
+                }
+            }
+        };
 
         function showKeyGUI(key, expireTime) {
             document.getElementById("stepsContainer").style.display = "none";
@@ -179,7 +166,7 @@
 
             setInterval(() => {
                 let diff = expireTime - new Date().getTime();
-                if (diff <= 0) { localStorage.removeItem("JR_SECURE_KEY_DATA"); location.reload(); }
+                if (diff <= 0) { localStorage.removeItem("JR_AUTO_KEY"); location.reload(); }
                 let h = Math.floor(diff / (1000 * 60 * 60));
                 let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 let s = Math.floor((diff % (1000 * 60)) / 1000);
