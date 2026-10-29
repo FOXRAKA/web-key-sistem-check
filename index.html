@@ -3,22 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JR SCRIPTS - Key Generator System</title>
+    <title>JR SCRIPTS - Key System</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0b0c10; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .card { background: rgba(18, 18, 28, 0.95); border: 1px solid rgba(0, 255, 200, 0.3); border-radius: 16px; width: 100%; max-width: 420px; padding: 25px; box-shadow: 0 0 25px rgba(0, 255, 200, 0.15); text-align: center; }
         .header h2 { color: #00ffc8; font-size: 22px; margin-bottom: 6px; letter-spacing: 1px; }
         .header p { color: #8a8a9e; font-size: 13px; margin-bottom: 20px; }
-
-        .premium-banner { background: linear-gradient(135deg, rgba(255, 180, 0, 0.15), rgba(255, 100, 0, 0.15)); border: 1px solid rgba(255, 180, 0, 0.4); border-radius: 10px; padding: 12px; margin-bottom: 20px; text-align: left; }
-        .premium-title { color: #ffc107; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: space-between; }
-        .badge-discount { background: #ff3b30; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
-        .premium-desc { color: #d1d1d1; font-size: 12px; margin-top: 4px; }
-        .price { margin-top: 6px; font-size: 13px; color: #fff; }
-        .price del { color: #888; font-size: 11px; }
-        .btn-buy { display: block; width: 100%; text-align: center; background: #ff9500; color: #000; font-weight: bold; font-size: 12px; padding: 8px; border-radius: 6px; text-decoration: none; margin-top: 8px; transition: 0.2s; }
-        .btn-buy:hover { background: #ffaa33; }
 
         .step-container { display: flex; flex-direction: column; gap: 10px; }
         .step-btn { background: #1a1a2a; border: 1px solid #2e2e45; color: #fff; padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; text-decoration: none; }
@@ -30,7 +21,6 @@
         .key-box { background: #090910; border: 1px solid #2a2a3d; padding: 10px; border-radius: 6px; color: #00ffc8; font-family: monospace; font-size: 14px; font-weight: bold; letter-spacing: 1px; margin: 10px 0; word-break: break-all; }
         .btn-copy { background: #00ffc8; color: #000; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-copy:hover { background: #00cc9f; }
-        .timer-info { font-size: 11px; color: #ff6b6b; margin-top: 8px; }
         .warning-msg { color: #ff3b30; font-size: 11px; margin-top: 10px; display: none; }
     </style>
 </head>
@@ -40,16 +30,6 @@
         <div class="header">
             <h2>⚡ JR SCRIPTS KEY ⚡</h2>
             <p>Selesaikan 4 Misi (Wajib min. 5 detik per tab)</p>
-        </div>
-
-        <div class="premium-banner">
-            <div class="premium-title">
-                <span>👑 LIFETIME PREMIUM</span>
-                <span class="badge-discount">DISKON 50%</span>
-            </div>
-            <p class="premium-desc">Tanpa Key, Akses Permanen Selamanya!</p>
-            <div class="price">Harga: <b>Rp 100.000</b> <del>Rp 200.000</del></div>
-            <a href="https://discord.gg/cDadHKqEh" target="_blank" class="btn-buy">🛒 BELI DI DISCORD</a>
         </div>
 
         <div class="step-container" id="stepsContainer">
@@ -69,10 +49,9 @@
         </div>
 
         <div id="keyResultSection">
-            <p style="font-size: 12px; color: #aaa;">🔑 Key Unik Kamu (Otomatis Dibuat):</p>
-            <div class="key-box" id="keyDisplay">JRK-GENERATING...</div>
+            <p style="font-size: 12px; color: #aaa;">🔑 Key Sah Sesuai Algoritma:</p>
+            <div class="key-box" id="keyDisplay">JRK-LOADING...</div>
             <button class="btn-copy" onclick="copyKey()">📋 SALIN KEY</button>
-            <div class="timer-info" id="timerDisplay">Berlaku selama 24 Jam</div>
         </div>
     </div>
 
@@ -128,50 +107,23 @@
                 nextBtn.classList.add("active");
                 document.getElementById("status" + currentStep).innerText = "➔";
             } else {
-                generateAutoKey();
+                generateAlgorithmicKey();
             }
         }
 
-        function generateAutoKey() {
-            // Generate kode unik kombinasi huruf & angka (contoh: JRK-AJVNU)
-            let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let uniqueCode = "";
-            for (let i = 0; i < 6; i++) {
-                uniqueCode += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            let finalKey = "JRK-" + uniqueCode;
-            let expireTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 Jam
+        function generateAlgorithmicKey() {
+            // Mengikuti rumus matematika algoritma yang sama dengan Owner Panel & Script Roblox
+            let num1 = Math.floor(Math.random() * 90) + 10;
+            let num2 = (num1 * 3) + 7;
+            let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            let c1 = chars.charAt(Math.floor(Math.random() * chars.length));
+            let c2 = chars.charAt(Math.floor(Math.random() * chars.length));
 
-            // Simpan ke localStorage web
-            localStorage.setItem("JR_AUTO_KEY", JSON.stringify({ key: finalKey, expire: expireTime }));
-            showKeyGUI(finalKey, expireTime);
-        }
+            let finalKey = "JRK-" + num1 + c1 + num2 + c2;
 
-        window.onload = function() {
-            let saved = localStorage.getItem("JR_AUTO_KEY");
-            if (saved) {
-                let data = JSON.parse(saved);
-                if (new Date().getTime() < data.expire) {
-                    showKeyGUI(data.key, data.expire);
-                } else {
-                    localStorage.removeItem("JR_AUTO_KEY");
-                }
-            }
-        };
-
-        function showKeyGUI(key, expireTime) {
             document.getElementById("stepsContainer").style.display = "none";
             document.getElementById("keyResultSection").style.display = "block";
-            document.getElementById("keyDisplay").innerText = key;
-
-            setInterval(() => {
-                let diff = expireTime - new Date().getTime();
-                if (diff <= 0) { localStorage.removeItem("JR_AUTO_KEY"); location.reload(); }
-                let h = Math.floor(diff / (1000 * 60 * 60));
-                let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                let s = Math.floor((diff % (1000 * 60)) / 1000);
-                document.getElementById("timerDisplay").innerText = `Berlaku: ${h}j ${m}m ${s}d`;
-            }, 1000);
+            document.getElementById("keyDisplay").innerText = finalKey;
         }
 
         function copyKey() {
